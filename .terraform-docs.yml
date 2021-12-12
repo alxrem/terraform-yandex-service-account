@@ -4,6 +4,3 @@ content: |-
   {{ .Outputs }}
 output:
   file: README.md
-  mode: replace
-  template: |
-    {{ .Content }}
