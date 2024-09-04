@@ -1,0 +1,4 @@
+include:
+  - project: tf-org-ru/ci
+    file: templates/module.yaml
+    ref: master

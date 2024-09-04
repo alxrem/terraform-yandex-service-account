@@ -11,7 +11,8 @@ A terraform module to create a service account on Yandex Cloud. Module will mana
 
 ```terraform
 module "storage_admin" {
-  source = "alxrem/service-account/yandex"
+  source  = "gitlab.com/tf-org-ru/service-account/yandex"
+  version = "~> 1.0" 
 
   name              = "storage-admin"
   roles             = ["storage.admin"]
@@ -19,7 +20,8 @@ module "storage_admin" {
 }
 
 module "backup_sa" {
-  source = "alxrem/service-account/yandex"
+  source  = "gitlab.com/tf-org-ru/service-account/yandex"
+  version = "~> 1.0"
 
   name                = "backup"
   service_account_key = true
