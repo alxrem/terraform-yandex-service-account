@@ -1,0 +1,9 @@
+formatter: "markdown document"
+output:
+  file: README.md
+  mode: inject
+sections:
+  show:
+    - requirements
+    - inputs
+    - outputs
