@@ -4,32 +4,32 @@ A terraform module to create a service account on Yandex Cloud. Module will mana
 
 * service account,
 * bindings to roles in the folder,
-* static access key of account,
-* service account key of account. 
+* static access keys of account,
+* service account keys of account. 
 
 ## Example usage
 
 ```terraform
 module "storage_admin" {
   source  = "gitlab.com/tf-org-ru/service-account/yandex"
-  version = "~> 1.0" 
+  version = "~> 2.0" 
 
   name              = "storage-admin"
   roles             = ["storage.admin"]
-  static_access_key = true
+  static_access_keys = {"default" = {}}
 }
 
 module "backup_sa" {
   source  = "gitlab.com/tf-org-ru/service-account/yandex"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
   name                = "backup"
-  service_account_key = true
+  service_account_key = {"default" = {}}
 }
 
 resource "yandex_storage_bucket" "default" {
-  access_key = module.storage_admin.access_key
-  secret_key = module.storage_admin.secret_key
+  access_key = module.storage_admin.static_access_keys["default"]["access_key"]
+  secret_key = module.storage_admin.static_access_keys["default"]["secret_key"]
 
   bucket = "backups"
 
@@ -41,27 +41,117 @@ resource "yandex_storage_bucket" "default" {
 }
 
 output "backup_sa_key" {
-  value = module.backup_sa.service_account_key
+  value = module.backup_sa.service_account_keys["default"]["json_key"]
 }
 ```
 <!-- BEGIN_TF_DOCS -->
-## Inputs
+## Requirements
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_description"></a> [description](#input\_description) | Description of the service account. | `string` | `"Managed by terraform"` | no |
-| <a name="input_folder_id"></a> [folder\_id](#input\_folder\_id) | ID of the folder that the service account will be created in. Defaults to the provider folder configuration. | `string` | `null` | no |
-| <a name="input_name"></a> [name](#input\_name) | Name of the service account | `string` | n/a | yes |
-| <a name="input_roles"></a> [roles](#input\_roles) | Roles of the service account in the folder. | `set(string)` | `[]` | no |
-| <a name="input_service_account_key"></a> [service\_account\_key](#input\_service\_account\_key) | Whether to create [service account authorized key](https://cloud.yandex.com/docs/iam/concepts/authorization/key). | `bool` | `false` | no |
-| <a name="input_static_access_key"></a> [static\_access\_key](#input\_static\_access\_key) | Whether to create [service account static access key](https://cloud.yandex.com/docs/iam/operations/sa/create-access-key). | `bool` | `false` | no |
+The following requirements are needed by this module:
+
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.3)
+
+- <a name="requirement_yandex"></a> [yandex](#requirement\_yandex) (~> 0.127)
+
+## Required Inputs
+
+The following input variables are required:
+
+### <a name="input_name"></a> [name](#input\_name)
+
+Description: Name of the service account
+
+Type: `string`
+
+## Optional Inputs
+
+The following input variables are optional (have default values):
+
+### <a name="input_description"></a> [description](#input\_description)
+
+Description: Description of the service account.
+
+Type: `string`
+
+Default: `"Managed by terraform"`
+
+### <a name="input_folder_id"></a> [folder\_id](#input\_folder\_id)
+
+Description: ID of the folder that the service account will be created in. Defaults to the provider folder configuration.
+
+Type: `string`
+
+Default: `null`
+
+### <a name="input_roles"></a> [roles](#input\_roles)
+
+Description: Roles of the service account in the folder.
+
+Type: `set(string)`
+
+Default: `[]`
+
+### <a name="input_service_account_keys"></a> [service\_account\_keys](#input\_service\_account\_keys)
+
+Description:   [Authorized keys](https://cloud.yandex.com/docs/iam/concepts/authorization/key) of account.
+
+  Map from the symbolic name to properties of the keys.
+
+Type:
+
+```hcl
+map(object({
+    description   = optional(string, "Managed by Terraform")
+    format        = optional(string)
+    key_algorithm = optional(string)
+    pgp_key       = optional(string)
+
+    output_to_lockbox = optional(object({
+      secret_id             = string
+      entry_for_private_key = string
+    }))
+  }))
+```
+
+Default: `{}`
+
+### <a name="input_static_access_keys"></a> [static\_access\_keys](#input\_static\_access\_keys)
+
+Description:   [Static access keys](https://cloud.yandex.com/docs/iam/operations/sa/create-access-key) of account.
+
+  Map from the symbolic name to properties of the keys.
+
+Type:
+
+```hcl
+map(object({
+    description = optional(string, "Managed by Terraform")
+    pgp_key     = optional(string)
+
+    output_to_lockbox = optional(object({
+      secret_id            = string
+      entry_for_secret_key = string
+    }))
+  }))
+```
+
+Default: `{}`
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_access_key"></a> [access\_key](#output\_access\_key) | ID of the static access key or `null` if `static_access_key` was not set to true. |
-| <a name="output_id"></a> [id](#output\_id) | ID of the service account |
-| <a name="output_secret_key"></a> [secret\_key](#output\_secret\_key) | Private part of generated static access key or `null` if `static_access_key` was not set to true. |
-| <a name="output_service_account_key"></a> [service\_account\_key](#output\_service\_account\_key) | JSON representation of service account key as generated by `yc iam key create --output key.json`. Or `null` if `service_account_key` was not set to true. |
+The following outputs are exported:
+
+### <a name="output_id"></a> [id](#output\_id)
+
+Description: ID of the service account.
+
+### <a name="output_service_account_keys"></a> [service\_account\_keys](#output\_service\_account\_keys)
+
+Description:   Properties of the service account keys, including  
+  JSON representation of service account key  
+  as generated by `yc iam key create --output key.json`.
+
+### <a name="output_static_access_keys"></a> [static\_access\_keys](#output\_static\_access\_keys)
+
+Description: Properties of the static access keys.
 <!-- END_TF_DOCS -->
