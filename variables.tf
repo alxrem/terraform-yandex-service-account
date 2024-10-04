@@ -55,6 +55,7 @@ variable "static_access_keys" {
 
     output_to_lockbox = optional(object({
       secret_id            = string
+      entry_for_access_key = string
       entry_for_secret_key = string
     }))
   }))

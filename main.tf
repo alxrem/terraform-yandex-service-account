@@ -41,10 +41,11 @@ resource "yandex_iam_service_account_static_access_key" "default" {
   pgp_key     = each.value.pgp_key
 
   dynamic "output_to_lockbox" {
-    for_each = each.value.output_to_lockbox == null ? [] : [each.value.output_to_lockbox]
+    for_each = each.value.output_to_lockbox[*]
 
     content {
       secret_id            = output_to_lockbox.value["secret_id"]
+      entry_for_access_key = output_to_lockbox.value["entry_for_access_key"]
       entry_for_secret_key = output_to_lockbox.value["entry_for_secret_key"]
     }
   }
@@ -61,7 +62,7 @@ resource "yandex_iam_service_account_key" "default" {
   pgp_key       = each.value.pgp_key
 
   dynamic "output_to_lockbox" {
-    for_each = each.value.output_to_lockbox == null ? [] : [each.value.output_to_lockbox]
+    for_each = each.value.output_to_lockbox[*]
 
     content {
       secret_id             = output_to_lockbox.value["secret_id"]
