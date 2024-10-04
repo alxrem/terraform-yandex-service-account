@@ -51,7 +51,7 @@ The following requirements are needed by this module:
 
 - <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.3)
 
-- <a name="requirement_yandex"></a> [yandex](#requirement\_yandex) (~> 0.127)
+- <a name="requirement_yandex"></a> [yandex](#requirement\_yandex) (~> 0.129)
 
 ## Required Inputs
 
@@ -130,6 +130,7 @@ map(object({
 
     output_to_lockbox = optional(object({
       secret_id            = string
+      entry_for_access_key = string
       entry_for_secret_key = string
     }))
   }))
@@ -144,6 +145,10 @@ The following outputs are exported:
 ### <a name="output_id"></a> [id](#output\_id)
 
 Description: ID of the service account.
+
+### <a name="output_name"></a> [name](#output\_name)
+
+Description: Name of the service account.
 
 ### <a name="output_service_account_keys"></a> [service\_account\_keys](#output\_service\_account\_keys)
 
