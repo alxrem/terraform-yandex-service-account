@@ -1,3 +1,9 @@
+## 3.0.1 (Oct 5, 2024)
+
+IMPROVEMENTS:
+
+- Validate "name" and "description" variables.
+
 ## 3.0.0 (Oct 4, 2024)
 
 BREAKING CHANGES:

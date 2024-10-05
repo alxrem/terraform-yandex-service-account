@@ -1,5 +1,10 @@
 # Terraform Yandex Service Account module
 
+> Project moved to https://gitlab.com/tf-org-ru/terraform-yandex-service-account/
+>
+> Next versions of module will be published as
+*gitlab.com/tf-org-ru/service-account/yandex* on Gitlab module registry.
+
 A terraform module to create a service account on Yandex Cloud. Module will manage
 
 * service account,
@@ -12,7 +17,7 @@ A terraform module to create a service account on Yandex Cloud. Module will mana
 ```terraform
 module "storage_admin" {
   source  = "gitlab.com/tf-org-ru/service-account/yandex"
-  version = "~> 2.0" 
+  version = "~> 3.0" 
 
   name              = "storage-admin"
   roles             = ["storage.admin"]
@@ -21,7 +26,7 @@ module "storage_admin" {
 
 module "backup_sa" {
   source  = "gitlab.com/tf-org-ru/service-account/yandex"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   name                = "backup"
   service_account_key = {"default" = {}}
@@ -59,7 +64,10 @@ The following input variables are required:
 
 ### <a name="input_name"></a> [name](#input\_name)
 
-Description: Name of the service account
+Description:   Name of the service account.
+
+  Name can contain only small letters, digits and dashes, must be started with  
+  the letter and must not be ended with dash.
 
 Type: `string`
 

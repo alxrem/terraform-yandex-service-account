@@ -13,9 +13,19 @@
 # limitations under the License.
 
 variable "name" {
-  description = "Name of the service account"
+  description = <<DESCRIPTION
+  Name of the service account.
+
+  Name can contain only small letters, digits and dashes, must be started with
+  the letter and must not be ended with dash.
+  DESCRIPTION
 
   type = string
+
+  validation {
+    condition     = can(regex("^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$", var.name))
+    error_message = "Name can contain only letters, digits and dashes."
+  }
 }
 
 variable "description" {
@@ -24,6 +34,11 @@ variable "description" {
   type = string
 
   default = "Managed by terraform"
+
+  validation {
+    condition     = length(var.description) <= 256
+    error_message = "Length of description must not be more than 256."
+  }
 }
 
 variable "folder_id" {
